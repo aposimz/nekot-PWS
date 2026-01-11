@@ -30,8 +30,9 @@ local function notifyCougar(message)
 	PlaySoundFrontend(-1, "DELETE", "HUD_DEATHMATCH_SOUNDSET", true)
 end
 
-RegisterCommand("6sense", function(_, args)
-	local sub = (args and args[1] or ""):lower()
+-- クーガー警告のON/OFFを切り替える関数
+local function toggleCougarAlert(arg)
+	local sub = (arg or ""):lower()
 	if sub == "on" then
 		alertEnabled = true
 		if QBCore and QBCore.Functions and QBCore.Functions.Notify then
@@ -55,7 +56,17 @@ RegisterCommand("6sense", function(_, args)
 			notifyCougar("クーガー警告: " .. state)
 		end
 	end
+end
+
+RegisterCommand("6sense", function(_, args)
+	toggleCougarAlert((args and args[1] or ""))
 end, false)
+
+-- ラジアルメニュー用のイベント（トグル）
+RegisterNetEvent('nekot-PWS:toggle')
+AddEventHandler('nekot-PWS:toggle', function()
+	toggleCougarAlert()
+end)
 
 Citizen.CreateThread(function()
 	while true do
